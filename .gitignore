@@ -89,3 +89,20 @@ lint/tmp/
 
 # Mac
 .DS_Store
+
+# Python virtual environment
+.venv/
+
+# VS Code
+.vscode/
+
+# IDE and project files
+.idea/
+*.iml
+
+# Logs
+logs/
+*.log
+
+# Local assets (build/generated images)
+assets/
