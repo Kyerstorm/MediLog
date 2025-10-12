@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Health Calendar</string>
+    
+    <!-- Widget -->
+    <string name="widget_description">View today\'s medication reminders</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_calendar">Calendar</string>
+    <string name="nav_medications">Medications</string>
+    <string name="nav_appointments">Appointments</string>
+    
+    <!-- Home Screen -->
+    <string name="home_welcome">Welcome to Health Calendar</string>
+    <string name="home_upcoming_medications">Upcoming Medications</string>
+    <string name="home_upcoming_appointments">Upcoming Appointments</string>
+    <string name="home_no_medications">No medications scheduled</string>
+    <string name="home_no_appointments">No upcoming appointments</string>
+    
+    <!-- Medication -->
+    <string name="medication_add">Add Medication</string>
+    <string name="medication_edit">Edit Medication</string>
+    <string name="medication_name">Medication Name</string>
+    <string name="medication_dosage">Dosage</string>
+    <string name="medication_unit">Unit (mg, ml, etc.)</string>
+    <string name="medication_form">Form</string>
+    <string name="medication_instructions">Instructions</string>
+    <string name="medication_notes">Notes</string>
+    <string name="medication_save">Save</string>
+    <string name="medication_cancel">Cancel</string>
+    <string name="medication_delete">Delete</string>
+    <string name="medication_delete_confirm">Are you sure you want to delete this medication?</string>
+    <string name="medication_list_empty">No medications added yet</string>
+    
+    <!-- Medication Forms -->
+    <string name="form_tablet">Tablet</string>
+    <string name="form_capsule">Capsule</string>
+    <string name="form_liquid">Liquid</string>
+    <string name="form_injection">Injection</string>
+    <string name="form_inhaler">Inhaler</string>
+    <string name="form_cream">Cream</string>
+    <string name="form_drops">Drops</string>
+    <string name="form_patch">Patch</string>
+    <string name="form_other">Other</string>
+    
+    <!-- Schedule -->
+    <string name="schedule_add">Add Schedule</string>
+    <string name="schedule_time">Time</string>
+    <string name="schedule_frequency">Frequency</string>
+    <string name="schedule_daily">Daily</string>
+    <string name="schedule_weekly">Weekly</string>
+    <string name="schedule_as_needed">As Needed</string>
+    <string name="schedule_custom">Custom</string>
+    <string name="schedule_days_of_week">Days of Week</string>
+    
+    <!-- Days of Week -->
+    <string name="day_monday">Monday</string>
+    <string name="day_tuesday">Tuesday</string>
+    <string name="day_wednesday">Wednesday</string>
+    <string name="day_thursday">Thursday</string>
+    <string name="day_friday">Friday</string>
+    <string name="day_saturday">Saturday</string>
+    <string name="day_sunday">Sunday</string>
+    
+    <!-- Appointments -->
+    <string name="appointment_add">Add Appointment</string>
+    <string name="appointment_edit">Edit Appointment</string>
+    <string name="appointment_title">Title</string>
+    <string name="appointment_description">Description</string>
+    <string name="appointment_location">Location</string>
+    <string name="appointment_start_time">Start Time</string>
+    <string name="appointment_end_time">End Time</string>
+    <string name="appointment_category">Category</string>
+    <string name="appointment_reminder">Reminder</string>
+    <string name="appointment_save">Save</string>
+    <string name="appointment_cancel">Cancel</string>
+    <string name="appointment_delete">Delete</string>
+    
+    <!-- Appointment Categories -->
+    <string name="category_doctor">Doctor</string>
+    <string name="category_dentist">Dentist</string>
+    <string name="category_therapy">Therapy</string>
+    <string name="category_lab_test">Lab Test</string>
+    <string name="category_surgery">Surgery</string>
+    <string name="category_checkup">Checkup</string>
+    <string name="category_vaccination">Vaccination</string>
+    <string name="category_other">Other</string>
+    
+    <!-- Calendar -->
+    <string name="calendar_today">Today</string>
+    <string name="calendar_month">Month</string>
+    <string name="calendar_week">Week</string>
+    <string name="calendar_day">Day</string>
+    
+    <!-- Notifications -->
+    <string name="notification_medication_title">Time to take your medication</string>
+    <string name="notification_appointment_title">Upcoming appointment</string>
+    
+    <!-- Buttons -->
+    <string name="button_add">Add</string>
+    <string name="button_save">Save</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_edit">Edit</string>
+    <string name="button_done">Done</string>
+    <string name="button_mark_taken">Mark as Taken</string>
+    <string name="button_skip">Skip</string>
+    
+    <!-- Errors -->
+    <string name="error_required_field">This field is required</string>
+    <string name="error_loading">Error loading data</string>
+    <string name="error_saving">Error saving data</string>
+    
+    <!-- Permissions -->
+    <string name="permission_notification_rationale">We need notification permission to remind you about medications and appointments</string>
+    <string name="permission_alarm_rationale">We need alarm permission to set exact medication reminders</string>
+</resources>

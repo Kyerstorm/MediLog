@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="medication_primary">#4CAF50</color>
+    <color name="medication_secondary">#81C784</color>
+    <color name="appointment_primary">#2196F3</color>
+    <color name="appointment_secondary">#64B5F6</color>
+    <color name="alert_color">#F44336</color>
+    <color name="warning_color">#FF9800</color>
+    <color name="success_color">#4CAF50</color>
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>
