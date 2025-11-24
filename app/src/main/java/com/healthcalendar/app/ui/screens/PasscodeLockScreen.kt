@@ -947,11 +947,14 @@ private fun NumericKeypad(
             }
         }
 
-        // Bottom row: 0, empty, backspace
+        // Bottom row: empty, 0, backspace
         Row(
             horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            // Zero button (left position)
+            // Empty spacer for alignment (left position)
+            Spacer(modifier = Modifier.size(72.dp))
+
+            // Zero button (center position)
             NumericButton(
                 text = "0",
                 onClick = {
@@ -960,9 +963,6 @@ private fun NumericKeypad(
                 },
                 isDarkMode = isDarkMode
             )
-
-            // Empty spacer for alignment (middle position)
-            Spacer(modifier = Modifier.size(72.dp))
 
             // Backspace button (right position)
             IconButton(
