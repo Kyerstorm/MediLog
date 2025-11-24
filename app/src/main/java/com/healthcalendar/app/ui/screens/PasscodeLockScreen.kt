@@ -9,6 +9,8 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -147,7 +149,7 @@ fun PasscodeLockScreen(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // App Logo and Title Section
                 Column(
@@ -202,8 +204,9 @@ fun PasscodeLockScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(32.dp),
-                        verticalArrangement = Arrangement.SpaceEvenly,
+                            .verticalScroll(rememberScrollState())
+                            .padding(24.dp),
+                        verticalArrangement = Arrangement.SpaceBetween,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         // Title and biometric icon
@@ -305,65 +308,69 @@ fun PasscodeLockScreen(
                             }
                         }
 
-                        // Custom numeric keypad
+                        // Custom numeric keypad with forgot button
                         if (!showSuccess) {
-                            NumericKeypad(
-                                onNumberClick = { digit ->
-                                    if (input.length < validPinLength) {
-                                        input += digit
-                                        error = null
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                NumericKeypad(
+                                    onNumberClick = { digit ->
+                                        if (input.length < validPinLength) {
+                                            input += digit
+                                            error = null
 
-                                        // Auto-submit when all digits entered
-                                        if (input.length == validPinLength) {
-                                            val enteredHash = sha256(input)
-                                            if (passHash != null && passHash == enteredHash) {
-                                                // Success
-                                                settingsViewModel.resetFailedAttempts()
-                                                showSuccess = true
-                                                coroutineScope.launch {
-                                                    delay(800)
-                                                    onUnlocked()
-                                                }
-                                            } else {
-                                                // Failed
-                                                settingsViewModel.incrementFailedAttempts()
-                                                error = "Incorrect passcode ($remainingAttempts attempts left)"
-                                                input = ""
+                                            // Auto-submit when all digits entered
+                                            if (input.length == validPinLength) {
+                                                val enteredHash = sha256(input)
+                                                if (passHash != null && passHash == enteredHash) {
+                                                    // Success
+                                                    settingsViewModel.resetFailedAttempts()
+                                                    showSuccess = true
+                                                    coroutineScope.launch {
+                                                        delay(800)
+                                                        onUnlocked()
+                                                    }
+                                                } else {
+                                                    // Failed
+                                                    settingsViewModel.incrementFailedAttempts()
+                                                    error = "Incorrect passcode ($remainingAttempts attempts left)"
+                                                    input = ""
 
-                                                // Check if should lockout
-                                                if (remainingAttempts <= 1) {
-                                                    isLockedOut = true
-                                                    lockoutSecondsRemaining = 30L // Start with 30 seconds
+                                                    // Check if should lockout
+                                                    if (remainingAttempts <= 1) {
+                                                        isLockedOut = true
+                                                        lockoutSecondsRemaining = 30L // Start with 30 seconds
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                },
-                                onBackspaceClick = {
-                                    if (input.isNotEmpty()) {
-                                        input = input.dropLast(1)
-                                        error = null
-                                    }
-                                },
-                                isDarkMode = isDark
-                            )
-
-                            // Forgot passcode button
-                            TextButton(
-                                onClick = { showEmergencyAccess = true },
-                                modifier = Modifier.padding(top = 16.dp)
-                            ) {
-                                Text(
-                                    "Forgot Passcode?",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.primary
+                                    },
+                                    onBackspaceClick = {
+                                        if (input.isNotEmpty()) {
+                                            input = input.dropLast(1)
+                                            error = null
+                                        }
+                                    },
+                                    isDarkMode = isDark
                                 )
+
+                                // Forgot passcode button
+                                TextButton(
+                                    onClick = { showEmergencyAccess = true },
+                                    modifier = Modifier.padding(top = 8.dp)
+                                ) {
+                                    Text(
+                                        "Forgot Passcode?",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
 
