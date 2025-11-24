@@ -43,17 +43,17 @@ import java.util.concurrent.Executor
 @Composable
 fun PasscodeLockScreen(
     settingsViewModel: SettingsViewModel,
-    onUnlocked: () -> Unit,
-    pinLength: Int = 6 // Configurable PIN length (4-6 digits)
+    onUnlocked: () -> Unit
 ) {
     val passHash by settingsViewModel.passcodeHash.collectAsState()
+    val passcodeLength by settingsViewModel.passcodeLength.collectAsState()
     var input by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val biometricEnabled by settingsViewModel.biometricEnabled.collectAsState()
 
-    // Validate PIN length
-    val validPinLength = pinLength.coerceIn(4, 6)
+    // Validate PIN length (4-8 digits)
+    val validPinLength = passcodeLength.coerceIn(4, 8)
 
     // Failed attempt tracking
     val maxAttempts by settingsViewModel.maxFailedAttempts.collectAsState()
