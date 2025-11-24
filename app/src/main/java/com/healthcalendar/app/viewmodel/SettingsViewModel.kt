@@ -34,7 +34,19 @@ data class SettingsUiState(
     val exportFormat: UserPreferencesRepository.ExportFormat = UserPreferencesRepository.ExportFormat.CSV,
     val passcodeEnabled: Boolean = false,
     val passcodeHash: String? = null,
-    val biometricEnabled: Boolean = false
+    val biometricEnabled: Boolean = false,
+    // New security fields
+    val autoLockEnabled: Boolean = false,
+    val autoLockTimeoutMinutes: Int = 0,
+    val lockOnScreenOff: Boolean = false,
+    val rememberUnlockMinutes: Int = 0,
+    val maxFailedAttempts: Int = 5,
+    val failedAttemptCount: Int = 0,
+    val requireBiometricAfterFails: Boolean = false,
+    val passcodeLength: Int = 6,
+    val allowAlphanumeric: Boolean = false,
+    val securityQuestion: String? = null,
+    val recoveryEmail: String? = null
 )
 
 @HiltViewModel
@@ -60,7 +72,18 @@ class SettingsViewModel @Inject constructor(
         preferencesRepository.exportFormat,
         preferencesRepository.passcodeEnabled,
         preferencesRepository.passcodeHash,
-        preferencesRepository.biometricEnabled
+        preferencesRepository.biometricEnabled,
+        preferencesRepository.autoLockEnabled,
+        preferencesRepository.autoLockTimeoutMinutes,
+        preferencesRepository.lockOnScreenOff,
+        preferencesRepository.rememberUnlockMinutes,
+        preferencesRepository.maxFailedAttempts,
+        preferencesRepository.failedAttemptCount,
+        preferencesRepository.requireBiometricAfterFails,
+        preferencesRepository.passcodeLength,
+        preferencesRepository.allowAlphanumeric,
+        preferencesRepository.securityQuestion,
+        preferencesRepository.recoveryEmail
     ) { values ->
         SettingsUiState(
             themeMode = values[0] as UserPreferencesRepository.ThemeMode,
@@ -76,7 +99,18 @@ class SettingsViewModel @Inject constructor(
             exportFormat = values[10] as UserPreferencesRepository.ExportFormat,
             passcodeEnabled = values[11] as Boolean,
             passcodeHash = values[12] as String?,
-            biometricEnabled = values[13] as Boolean
+            biometricEnabled = values[13] as Boolean,
+            autoLockEnabled = values[14] as Boolean,
+            autoLockTimeoutMinutes = values[15] as Int,
+            lockOnScreenOff = values[16] as Boolean,
+            rememberUnlockMinutes = values[17] as Int,
+            maxFailedAttempts = values[18] as Int,
+            failedAttemptCount = values[19] as Int,
+            requireBiometricAfterFails = values[20] as Boolean,
+            passcodeLength = values[21] as Int,
+            allowAlphanumeric = values[22] as Boolean,
+            securityQuestion = values[23] as String?,
+            recoveryEmail = values[24] as String?
         )
     }.stateIn(
         scope = viewModelScope,
@@ -127,7 +161,25 @@ class SettingsViewModel @Inject constructor(
     val biometricEnabled = preferencesRepository.biometricEnabled.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(), false
     )
-    
+    val autoLockEnabled = preferencesRepository.autoLockEnabled.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), false
+    )
+    val autoLockTimeoutMinutes = preferencesRepository.autoLockTimeoutMinutes.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), 0
+    )
+    val lockOnScreenOff = preferencesRepository.lockOnScreenOff.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), false
+    )
+    val maxFailedAttempts = preferencesRepository.maxFailedAttempts.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), 5
+    )
+    val failedAttemptCount = preferencesRepository.failedAttemptCount.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), 0
+    )
+    val passcodeLength = preferencesRepository.passcodeLength.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), 6
+    )
+
     // Status flows
     private val _exportStatus = MutableStateFlow<OperationStatus>(OperationStatus.Idle)
     val exportStatus: StateFlow<OperationStatus> = _exportStatus.asStateFlow()
@@ -481,7 +533,63 @@ class SettingsViewModel @Inject constructor(
     fun resetBackupStatus() {
         _backupStatus.value = OperationStatus.Idle
     }
-    
+
+    // Security settings setters
+    fun setAutoLockEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.setAutoLockEnabled(enabled)
+        }
+    }
+
+    fun setAutoLockTimeout(minutes: Int) {
+        viewModelScope.launch {
+            preferencesRepository.setAutoLockTimeoutMinutes(minutes)
+        }
+    }
+
+    fun setLockOnScreenOff(enabled: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.setLockOnScreenOff(enabled)
+        }
+    }
+
+    fun setMaxFailedAttempts(max: Int) {
+        viewModelScope.launch {
+            preferencesRepository.setMaxFailedAttempts(max)
+        }
+    }
+
+    fun setPasscodeLength(length: Int) {
+        viewModelScope.launch {
+            preferencesRepository.setPasscodeLength(length)
+        }
+    }
+
+    fun setAllowAlphanumeric(allowed: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.setAllowAlphanumeric(allowed)
+        }
+    }
+
+    fun setSecurityQuestion(question: String, answer: String) {
+        viewModelScope.launch {
+            val answerHash = sha256(answer.trim().lowercase())
+            preferencesRepository.setSecurityQuestion(question, answerHash)
+        }
+    }
+
+    fun setRecoveryEmail(email: String) {
+        viewModelScope.launch {
+            preferencesRepository.setRecoveryEmail(email)
+        }
+    }
+
+    private fun sha256(input: String): String {
+        val md = java.security.MessageDigest.getInstance("SHA-256")
+        val bytes = md.digest(input.toByteArray(Charsets.UTF_8))
+        return bytes.joinToString("") { "%02x".format(it) }
+    }
+
     sealed class OperationStatus {
         object Idle : OperationStatus()
         object Loading : OperationStatus()
