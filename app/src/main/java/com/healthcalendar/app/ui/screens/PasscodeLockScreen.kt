@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
@@ -93,6 +94,9 @@ fun PasscodeLockScreen(
 
     // Success state for animation
     var showSuccess by remember { mutableStateOf(false) }
+
+    // Emergency access state
+    var showEmergencyAccess by remember { mutableStateOf(false) }
 
     // Coroutine scope for async operations
     val coroutineScope = rememberCoroutineScope()
@@ -343,6 +347,18 @@ fun PasscodeLockScreen(
                                 },
                                 isDarkMode = isDark
                             )
+
+                            // Forgot passcode button
+                            TextButton(
+                                onClick = { showEmergencyAccess = true },
+                                modifier = Modifier.padding(top = 16.dp)
+                            ) {
+                                Text(
+                                    "Forgot Passcode?",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                     }
                 }
@@ -356,6 +372,24 @@ fun PasscodeLockScreen(
             LockoutOverlay(
                 remainingSeconds = lockoutSecondsRemaining,
                 onDismiss = { /* Cannot dismiss */ }
+            )
+        }
+
+        // Emergency access dialog
+        if (showEmergencyAccess) {
+            val securityQuestion by settingsViewModel.settingsState.collectAsState()
+
+            EmergencyAccessDialog(
+                securityQuestion = securityQuestion.securityQuestion,
+                recoveryEmail = securityQuestion.recoveryEmail,
+                onVerifyAnswer = { answer ->
+                    // TODO: Verify with SecurityManager
+                    false
+                },
+                onClearData = {
+                    // TODO: Clear all app data
+                },
+                onDismiss = { showEmergencyAccess = false }
             )
         }
     }
@@ -674,6 +708,203 @@ private fun LockoutOverlay(
             }
         }
     }
+}
+
+/**
+ * Emergency access dialog for password recovery
+ */
+@Composable
+private fun EmergencyAccessDialog(
+    securityQuestion: String?,
+    recoveryEmail: String?,
+    onVerifyAnswer: (String) -> Boolean,
+    onClearData: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    var selectedOption by remember { mutableStateOf<EmergencyOption?>(null) }
+    var answerInput by remember { mutableStateOf("") }
+    var verificationError by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                "Emergency Access",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                when (selectedOption) {
+                    EmergencyOption.SECURITY_QUESTION -> {
+                        if (securityQuestion != null) {
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text(
+                                    securityQuestion,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Medium
+                                )
+
+                                OutlinedTextField(
+                                    value = answerInput,
+                                    onValueChange = {
+                                        answerInput = it
+                                        verificationError = null
+                                    },
+                                    label = { Text("Your Answer") },
+                                    singleLine = true,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    isError = verificationError != null
+                                )
+
+                                verificationError?.let {
+                                    Text(
+                                        it,
+                                        color = MaterialTheme.colorScheme.error,
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                            }
+                        } else {
+                            Text(
+                                "No security question set up.",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+
+                    EmergencyOption.EMAIL_RECOVERY -> {
+                        if (recoveryEmail != null) {
+                            Text("Recovery instructions will be sent to:\n$recoveryEmail")
+                            // TODO: Implement email sending
+                        } else {
+                            Text(
+                                "No recovery email set up.",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+
+                    EmergencyOption.CLEAR_DATA -> {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                "WARNING",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                            Text(
+                                "This will permanently delete all your health data, appointments, medications, and documents. This action cannot be undone.",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+
+                    null -> {
+                        // Show options
+                        Text(
+                            "Choose a recovery method:",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            if (securityQuestion != null) {
+                                OutlinedButton(
+                                    onClick = { selectedOption = EmergencyOption.SECURITY_QUESTION },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Icon(Icons.Filled.Lock, contentDescription = null)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("Answer Security Question")
+                                }
+                            }
+
+                            if (recoveryEmail != null) {
+                                OutlinedButton(
+                                    onClick = { selectedOption = EmergencyOption.EMAIL_RECOVERY },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Icon(Icons.Filled.Email, contentDescription = null)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("Email Recovery")
+                                }
+                            }
+
+                            OutlinedButton(
+                                onClick = { selectedOption = EmergencyOption.CLEAR_DATA },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.error
+                                )
+                            ) {
+                                Icon(Icons.Filled.Lock, contentDescription = null)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Clear All Data")
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            when (selectedOption) {
+                EmergencyOption.SECURITY_QUESTION -> {
+                    TextButton(
+                        onClick = {
+                            if (onVerifyAnswer(answerInput)) {
+                                // Success - reset passcode
+                                onDismiss()
+                            } else {
+                                verificationError = "Incorrect answer"
+                            }
+                        }
+                    ) {
+                        Text("Verify")
+                    }
+                }
+                EmergencyOption.EMAIL_RECOVERY -> {
+                    TextButton(onClick = { /* TODO: Send email */ }) {
+                        Text("Send Email")
+                    }
+                }
+                EmergencyOption.CLEAR_DATA -> {
+                    TextButton(
+                        onClick = {
+                            onClearData()
+                            onDismiss()
+                        },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Text("Clear Data")
+                    }
+                }
+                null -> {}
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = {
+                if (selectedOption != null) {
+                    selectedOption = null
+                } else {
+                    onDismiss()
+                }
+            }) {
+                Text(if (selectedOption != null) "Back" else "Cancel")
+            }
+        }
+    )
+}
+
+private enum class EmergencyOption {
+    SECURITY_QUESTION,
+    EMAIL_RECOVERY,
+    CLEAR_DATA
 }
 
 /**
