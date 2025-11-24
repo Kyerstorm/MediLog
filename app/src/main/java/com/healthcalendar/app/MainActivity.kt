@@ -26,6 +26,14 @@ import com.healthcalendar.app.ui.navigation.AppNavigation
 import com.healthcalendar.app.ui.theme.HealthCalendarTheme
 import com.healthcalendar.app.ui.theme.ThemeProvider
 import com.healthcalendar.app.viewmodel.ThemeViewModel
+import com.healthcalendar.app.viewmodel.SettingsViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import com.healthcalendar.app.ui.screens.PasscodeLockScreen
+import kotlinx.coroutines.flow.collectLatest
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 import javax.inject.Inject
@@ -87,7 +95,7 @@ class MainActivity : ComponentActivity() {
             val useDynamicColors by themeViewModel.useDynamicColors.collectAsState()
             val useCustomTheme by themeViewModel.useCustomTheme.collectAsState()
             val customThemeJson by themeViewModel.customThemeJson.collectAsState()
-            
+
             // Get other preferences
             val fontScale by preferencesRepository.fontScale.collectAsState(initial = 1.0f)
             val language by preferencesRepository.language.collectAsState(
@@ -134,11 +142,23 @@ class MainActivity : ComponentActivity() {
                     dynamicColor = useDynamicColors,
                     customColors = customColors
                 ) {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        AppNavigation()
+                    // track passcode validation for this session (inside theme so the lock screen respects app theme)
+                    var passcodeValidated by remember { mutableStateOf(false) }
+
+                    // collect passcode enabled flag
+                    val passcodeEnabled by preferencesRepository.passcodeEnabled.collectAsState(initial = false)
+
+                    if (passcodeEnabled && !passcodeValidated) {
+                        PasscodeLockScreen(settingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel<SettingsViewModel>(), onUnlocked = {
+                            passcodeValidated = true
+                        })
+                    } else {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            AppNavigation()
+                        }
                     }
                 }
             }

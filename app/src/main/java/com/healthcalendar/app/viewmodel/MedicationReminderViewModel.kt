@@ -5,9 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.healthcalendar.app.data.database.entities.MedicationReminder
 import com.healthcalendar.app.data.repository.MedicationReminderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -18,9 +16,22 @@ import javax.inject.Inject
 class MedicationReminderViewModel @Inject constructor(
     private val repository: MedicationReminderRepository
 ) : ViewModel() {
-    
+
     private val _selectedDate = MutableStateFlow<LocalDate?>(null)
     val selectedDate: StateFlow<LocalDate?> = _selectedDate
+
+    // Sorted medication reminders with alarms enabled for AlarmsScreen
+    val sortedRemindersWithAlarms: StateFlow<List<MedicationReminder>> = repository.getAllReminders()
+        .map { reminders ->
+            reminders
+                .filter { it.alarmEnabled }
+                .sortedWith(compareBy({ it.date }, { it.time }))
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
     
     fun getAllReminders(): Flow<List<MedicationReminder>> {
         return repository.getAllReminders()

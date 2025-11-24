@@ -106,3 +106,5 @@ logs/
 
 # Local assets (build/generated images)
 assets/
+CLAUDE.md
+.claude/settings.local.json

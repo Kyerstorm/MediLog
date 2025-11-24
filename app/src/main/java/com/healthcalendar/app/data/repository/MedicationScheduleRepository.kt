@@ -10,8 +10,11 @@ import javax.inject.Singleton
 class MedicationScheduleRepository @Inject constructor(
     private val scheduleDao: MedicationScheduleDao
 ) {
-    fun getSchedulesForMedication(medicationId: Long): Flow<List<MedicationSchedule>> = 
+    fun getSchedulesForMedication(medicationId: Long): Flow<List<MedicationSchedule>> =
         scheduleDao.getSchedulesForMedication(medicationId)
+
+    suspend fun getSchedulesForMedicationSync(medicationId: Long): List<MedicationSchedule> =
+        scheduleDao.getSchedulesForMedicationSync(medicationId)
     
     fun getAllActiveSchedules(): Flow<List<MedicationSchedule>> = 
         scheduleDao.getAllActiveSchedules()

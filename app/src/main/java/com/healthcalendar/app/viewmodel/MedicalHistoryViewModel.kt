@@ -38,10 +38,11 @@ class MedicalHistoryViewModel @Inject constructor(
                 val today = now.date
                 val sevenDaysAgo = today.minus(7, DateTimeUnit.DAY)
                 val thirtyDaysAgo = today.minus(30, DateTimeUnit.DAY)
-                
-                // Get only logs from last 30 days (optimized for performance)
-                val allLogs = medicationLogRepository.getAllLogs()
-                    .filter { it.scheduledTime.date >= thirtyDaysAgo }
+
+                // Get only logs from last 30 days using SQL-level filtering (optimized for performance)
+                val startDateTime = LocalDateTime(thirtyDaysAgo, LocalTime(0, 0))
+                val endDateTime = LocalDateTime(today, LocalTime(23, 59, 59))
+                val allLogs = medicationLogRepository.getLogsBetweenDatesSync(startDateTime, endDateTime)
                 
                 // If no logs at all, return empty statistics
                 if (allLogs.isEmpty()) {

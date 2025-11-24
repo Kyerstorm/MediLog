@@ -19,6 +19,24 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
+// Consolidated settings UI state for better performance
+data class SettingsUiState(
+    val themeMode: UserPreferencesRepository.ThemeMode = UserPreferencesRepository.ThemeMode.SYSTEM,
+    val dynamicColor: Boolean = true,
+    val fontScale: Float = 1.0f,
+    val highContrast: Boolean = false,
+    val amoledMode: Boolean = false,
+    val language: UserPreferencesRepository.Language = UserPreferencesRepository.Language.ENGLISH,
+    val notificationSound: UserPreferencesRepository.NotificationSound = UserPreferencesRepository.NotificationSound.DEFAULT,
+    val vibrate: Boolean = true,
+    val autoBackup: Boolean = false,
+    val backupFrequency: UserPreferencesRepository.BackupFrequency = UserPreferencesRepository.BackupFrequency.WEEKLY,
+    val exportFormat: UserPreferencesRepository.ExportFormat = UserPreferencesRepository.ExportFormat.CSV,
+    val passcodeEnabled: Boolean = false,
+    val passcodeHash: String? = null,
+    val biometricEnabled: Boolean = false
+)
+
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -26,50 +44,54 @@ class SettingsViewModel @Inject constructor(
     private val medicationRepository: MedicationRepository,
     private val preferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
-    
-    // Theme settings
+
+    // Consolidated settings state - reduces recompositions significantly
+    val settingsState: StateFlow<SettingsUiState> = combine(
+        preferencesRepository.themeMode,
+        preferencesRepository.dynamicColor,
+        preferencesRepository.fontScale,
+        preferencesRepository.highContrast,
+        preferencesRepository.amoledMode,
+        preferencesRepository.language,
+        preferencesRepository.notificationSound,
+        preferencesRepository.vibrate,
+        preferencesRepository.autoBackup,
+        preferencesRepository.backupFrequency,
+        preferencesRepository.exportFormat,
+        preferencesRepository.passcodeEnabled,
+        preferencesRepository.passcodeHash,
+        preferencesRepository.biometricEnabled
+    ) { values ->
+        SettingsUiState(
+            themeMode = values[0] as UserPreferencesRepository.ThemeMode,
+            dynamicColor = values[1] as Boolean,
+            fontScale = values[2] as Float,
+            highContrast = values[3] as Boolean,
+            amoledMode = values[4] as Boolean,
+            language = values[5] as UserPreferencesRepository.Language,
+            notificationSound = values[6] as UserPreferencesRepository.NotificationSound,
+            vibrate = values[7] as Boolean,
+            autoBackup = values[8] as Boolean,
+            backupFrequency = values[9] as UserPreferencesRepository.BackupFrequency,
+            exportFormat = values[10] as UserPreferencesRepository.ExportFormat,
+            passcodeEnabled = values[11] as Boolean,
+            passcodeHash = values[12] as String?,
+            biometricEnabled = values[13] as Boolean
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = SettingsUiState()
+    )
+
+    // Legacy individual properties for backward compatibility (can be removed after UI update)
+    @Deprecated("Use settingsState instead", ReplaceWith("settingsState.map { it.themeMode }"))
     val themeMode = preferencesRepository.themeMode.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(), UserPreferencesRepository.ThemeMode.SYSTEM
     )
+    @Deprecated("Use settingsState instead", ReplaceWith("settingsState.map { it.dynamicColor }"))
     val dynamicColor = preferencesRepository.dynamicColor.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(), true
-    )
-    
-    // Accessibility settings
-    val fontScale = preferencesRepository.fontScale.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), 1.0f
-    )
-    val highContrast = preferencesRepository.highContrast.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), false
-    )
-    val amoledMode = preferencesRepository.amoledMode.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), false
-    )
-    
-    // Language setting
-    val language = preferencesRepository.language.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), UserPreferencesRepository.Language.ENGLISH
-    )
-    
-    // Notification settings
-    val notificationSound = preferencesRepository.notificationSound.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), UserPreferencesRepository.NotificationSound.DEFAULT
-    )
-    val vibrate = preferencesRepository.vibrate.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), true
-    )
-    
-    // Backup settings
-    val autoBackup = preferencesRepository.autoBackup.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), false
-    )
-    val backupFrequency = preferencesRepository.backupFrequency.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), UserPreferencesRepository.BackupFrequency.WEEKLY
-    )
-    
-    // Export format
-    val exportFormat = preferencesRepository.exportFormat.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(), UserPreferencesRepository.ExportFormat.CSV
     )
     
     // Status flows
@@ -175,6 +197,25 @@ class SettingsViewModel @Inject constructor(
     fun setExportFormat(format: UserPreferencesRepository.ExportFormat) {
         viewModelScope.launch {
             preferencesRepository.setExportFormat(format)
+        }
+    }
+
+    fun setPasscode(hash: String) {
+        viewModelScope.launch {
+            preferencesRepository.setPasscodeHash(hash)
+            preferencesRepository.setPasscodeEnabled(true)
+        }
+    }
+
+    fun disablePasscode() {
+        viewModelScope.launch {
+            preferencesRepository.clearPasscode()
+        }
+    }
+
+    fun setBiometricEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.setBiometricEnabled(enabled)
         }
     }
     

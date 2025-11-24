@@ -40,24 +40,34 @@ fun AlarmsScreen(
     medicationViewModel: MedicationViewModel = hiltViewModel(),
     medicationReminderViewModel: MedicationReminderViewModel = hiltViewModel()
 ) {
-    val allAppointments by appointmentViewModel.appointments.collectAsState()
-    val medications by medicationViewModel.medications.collectAsState()
-    val allMedicationReminders by medicationReminderViewModel.getAllReminders().collectAsState(initial = emptyList())
-    
-    val alarms = remember(allAppointments) {
-        allAppointments.filter { it.eventType == EventType.ALARM }
-            .sortedWith(compareBy({ it.startTime.date }, { it.startTime.time }))
+    // Use pre-sorted StateFlows from ViewModels for better performance
+    val alarms by appointmentViewModel.sortedAlarms.collectAsState()
+    val medicationRemindersWithAlarms by medicationReminderViewModel.sortedRemindersWithAlarms.collectAsState()
+
+    // Compute unique medication IDs needed for display (optimized - no longer loads ALL medications)
+    val neededMedicationIds = remember(alarms, medicationRemindersWithAlarms) {
+        val ids = mutableSetOf<Long>()
+        // Add medication IDs from alarms
+        alarms.forEach { alarm ->
+            alarm.medicationId?.let { ids.add(it) }
+            ids.addAll(alarm.medicationIds)
+        }
+        // Add medication IDs from reminders
+        medicationRemindersWithAlarms.forEach { reminder ->
+            ids.add(reminder.medicationId)
+        }
+        ids.toList()
     }
-    
-    // Filter medication reminders that have alarms enabled
-    val medicationRemindersWithAlarms = remember(allMedicationReminders) {
-        allMedicationReminders.filter { it.alarmEnabled }
-            .sortedWith(compareBy({ it.date }, { it.time }))
-    }
-    
-    // Create a map of medication IDs to medications for quick lookup
-    val medicationMap = remember(medications) {
-        medications.associateBy { it.id }
+
+    // Fetch only the medications we actually need (not all 100+)
+    var medicationMap by remember { mutableStateOf<Map<Long, Medication>>(emptyMap()) }
+    LaunchedEffect(neededMedicationIds) {
+        if (neededMedicationIds.isNotEmpty()) {
+            val meds = medicationViewModel.getMedicationsByIds(neededMedicationIds)
+            medicationMap = meds.associateBy { it.id }
+        } else {
+            medicationMap = emptyMap()
+        }
     }
     
     // Combined count for header

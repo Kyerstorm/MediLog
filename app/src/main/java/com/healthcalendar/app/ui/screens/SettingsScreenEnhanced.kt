@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.healthcalendar.app.data.preferences.UserPreferencesRepository
@@ -27,6 +29,9 @@ import com.healthcalendar.app.viewmodel.ThemeViewModel
 import com.healthcalendar.app.ui.theme.AppTheme
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import java.security.MessageDigest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,6 +58,17 @@ fun SettingsScreenEnhanced(
     val importStatus by viewModel.importStatus.collectAsState()
     val backupStatus by viewModel.backupStatus.collectAsState()
     val backupList by viewModel.backupList.collectAsState()
+
+    // Biometric availability and preference
+    val biometricAvailable = try {
+        val bm = androidx.biometric.BiometricManager.from(context)
+        // Accept biometric strong, biometric weak, or device credential as available options
+        val authenticators = androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG or
+                androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK or
+                androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+        bm.canAuthenticate(authenticators) == androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
+    } catch (e: Exception) { false }
+    val biometricEnabled by viewModel.biometricEnabled.collectAsState()
     
     // Dialog states
     var showThemeDialog by remember { mutableStateOf(false) }
@@ -64,6 +80,8 @@ fun SettingsScreenEnhanced(
     var showBackupListDialog by remember { mutableStateOf(false) }
     var showFontScaleDialog by remember { mutableStateOf(false) }
     var showCustomThemeDialog by remember { mutableStateOf(false) }
+    var showPasscodeDialog by remember { mutableStateOf(false) }
+    var showDisablePasscodeDialog by remember { mutableStateOf(false) }
     
     // File picker for import
     val importLauncher = rememberLauncherForActivityResult(
@@ -367,6 +385,51 @@ fun SettingsScreenEnhanced(
                     onClick = { }
                 )
             }
+
+            // === SECURITY SECTION ===
+            item {
+                SectionHeader("Security")
+            }
+
+            item {
+                // Passcode toggle and management
+                val passcodeEnabled by viewModel.passcodeEnabled.collectAsState()
+                SettingsSwitchItem(
+                    icon = Icons.Filled.Lock,
+                    title = "Require Passcode",
+                    subtitle = if (passcodeEnabled) "App requires passcode on open" else "No passcode",
+                    checked = passcodeEnabled,
+                    onCheckedChange = { enabled ->
+                        if (enabled) {
+                            // Show dialog to set passcode
+                            showPasscodeDialog = true
+                        } else {
+                            // Disable passcode after confirmation dialog
+                            showDisablePasscodeDialog = true
+                        }
+                    }
+                )
+            }
+            if (biometricAvailable) {
+                item {
+                    SettingsSwitchItem(
+                        icon = Icons.Filled.Fingerprint,
+                        title = "Enable Biometric Unlock",
+                        subtitle = if (biometricEnabled) "Unlock with fingerprint/face" else "Disabled",
+                        checked = biometricEnabled,
+                        onCheckedChange = { enabled ->
+                            // Only allow enabling biometrics if passcode is set
+                            val passEnabled = viewModel.passcodeEnabled.value
+                            if (enabled && !passEnabled) {
+                                Toast.makeText(context, "Set a passcode before enabling biometrics", Toast.LENGTH_LONG).show()
+                            } else {
+                                viewModel.setBiometricEnabled(enabled)
+                                Toast.makeText(context, if (enabled) "Biometric enabled" else "Biometric disabled", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    )
+                }
+            }
         }
     }
     
@@ -603,6 +666,27 @@ fun SettingsScreenEnhanced(
             }
         }
         else -> {}
+    }
+
+    // Passcode dialogs
+    val currentPassHash by viewModel.passcodeHash.collectAsState()
+
+    if (showPasscodeDialog) {
+        PasscodeSetDialog(onSave = { hash ->
+            viewModel.setPasscode(hash)
+            Toast.makeText(context, "Passcode set", Toast.LENGTH_SHORT).show()
+        }, onDismiss = { showPasscodeDialog = false })
+    }
+
+    if (showDisablePasscodeDialog) {
+        PasscodeDisableDialog(onConfirmDisable = { enteredHash ->
+            if (currentPassHash != null && currentPassHash == enteredHash) {
+                viewModel.disablePasscode()
+                Toast.makeText(context, "Passcode disabled", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Incorrect passcode", Toast.LENGTH_LONG).show()
+            }
+        }, onDismiss = { showDisablePasscodeDialog = false })
     }
 }
 
@@ -1065,35 +1149,164 @@ private fun BackupListDialog(
     )
 }
 
-// Helper function to play notification sounds (5 second preview)
+// Global ringtone tracker to prevent resource leaks
+private var currentRingtone: android.media.Ringtone? = null
+private var ringtoneStopRunnable: Runnable? = null
+private val ringtoneHandler = android.os.Handler(android.os.Looper.getMainLooper())
+
+// Helper function to play notification sounds (5 second preview) - optimized to prevent resource leaks
 private fun playNotificationSound(context: Context, sound: UserPreferencesRepository.NotificationSound) {
     try {
+        // Stop and cleanup any currently playing ringtone before playing new one
+        stopCurrentRingtone()
+
         val uri = when (sound) {
-            UserPreferencesRepository.NotificationSound.DEFAULT -> 
+            UserPreferencesRepository.NotificationSound.DEFAULT ->
                 RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            UserPreferencesRepository.NotificationSound.GENTLE -> 
+            UserPreferencesRepository.NotificationSound.GENTLE ->
                 RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            UserPreferencesRepository.NotificationSound.ALERT -> 
+            UserPreferencesRepository.NotificationSound.ALERT ->
                 RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
             UserPreferencesRepository.NotificationSound.SILENT -> null
         }
-        
+
         uri?.let {
             val ringtone = RingtoneManager.getRingtone(context, it)
+            currentRingtone = ringtone
             ringtone?.play()
-            
-            // Stop after 5 seconds
-            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                try {
-                    ringtone?.stop()
-                } catch (e: Exception) {
-                    // Ignore
-                }
-            }, 5000)
+
+            // Stop after 5 seconds and cleanup
+            ringtoneStopRunnable = Runnable {
+                stopCurrentRingtone()
+            }
+            ringtoneHandler.postDelayed(ringtoneStopRunnable!!, 5000)
         }
     } catch (e: Exception) {
-        // Ignore errors
+        // Cleanup on error
+        stopCurrentRingtone()
     }
+}
+
+// Helper function to stop and cleanup current ringtone
+private fun stopCurrentRingtone() {
+    try {
+        // Cancel pending stop callback
+        ringtoneStopRunnable?.let {
+            ringtoneHandler.removeCallbacks(it)
+            ringtoneStopRunnable = null
+        }
+
+        // Stop and release ringtone
+        currentRingtone?.let {
+            if (it.isPlaying) {
+                it.stop()
+            }
+            currentRingtone = null
+        }
+    } catch (e: Exception) {
+        // Ignore cleanup errors
+        currentRingtone = null
+    }
+}
+
+// Passcode helpers and dialogs
+
+@Composable
+private fun PasscodeSetDialog(
+    onSave: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var pass1 by remember { mutableStateOf("") }
+    var pass2 by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Set Passcode") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = pass1,
+                    onValueChange = { pass1 = it.filter { ch -> ch.isDigit() }; error = null },
+                    label = { Text("Enter passcode") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = pass2,
+                    onValueChange = { pass2 = it.filter { ch -> ch.isDigit() }; error = null },
+                    label = { Text("Confirm passcode") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
+                )
+                error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                if (pass1.isBlank() || pass2.isBlank()) {
+                    error = "Passcode cannot be empty"
+                    return@TextButton
+                }
+                if (pass1 != pass2) {
+                    error = "Passcodes do not match"
+                    return@TextButton
+                }
+                val hash = sha256(pass1)
+                onSave(hash)
+                onDismiss()
+            }) { Text("Save") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancel") }
+        }
+    )
+}
+
+@Composable
+private fun PasscodeDisableDialog(
+    onConfirmDisable: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var current by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Disable Passcode") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = current,
+                    onValueChange = { current = it.filter { ch -> ch.isDigit() }; error = null },
+                    label = { Text("Enter current passcode") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
+                )
+                error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                if (current.isBlank()) {
+                    error = "Enter current passcode"
+                    return@TextButton
+                }
+                onConfirmDisable(sha256(current))
+                onDismiss()
+            }) { Text("Disable") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancel") }
+        }
+    )
+}
+
+private fun sha256(input: String): String {
+    val md = MessageDigest.getInstance("SHA-256")
+    val bytes = md.digest(input.toByteArray(Charsets.UTF_8))
+    return bytes.joinToString("") { "%02x".format(it) }
 }
 
 @Composable

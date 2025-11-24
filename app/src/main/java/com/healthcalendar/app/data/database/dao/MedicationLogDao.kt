@@ -17,6 +17,9 @@ interface MedicationLogDao {
     
     @Query("SELECT * FROM medication_logs WHERE scheduledTime >= :startDate AND scheduledTime <= :endDate ORDER BY scheduledTime DESC")
     fun getLogsBetweenDates(startDate: LocalDateTime, endDate: LocalDateTime): Flow<List<MedicationLog>>
+
+    @Query("SELECT * FROM medication_logs WHERE scheduledTime >= :startDate AND scheduledTime <= :endDate ORDER BY scheduledTime DESC LIMIT :limit")
+    suspend fun getLogsBetweenDatesSync(startDate: LocalDateTime, endDate: LocalDateTime, limit: Int = 1000): List<MedicationLog>
     
     @Query("SELECT * FROM medication_logs WHERE status = :status ORDER BY scheduledTime DESC")
     fun getLogsByStatus(status: MedicationStatus): Flow<List<MedicationLog>>

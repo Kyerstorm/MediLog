@@ -36,18 +36,28 @@ fun CalendarScreen(
     val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     var selectedDate by remember { mutableStateOf(now.date) }
     var currentMonth by remember { mutableStateOf(now.date) }
-    
-    val startOfMonth = LocalDateTime(currentMonth.year, currentMonth.month, 1, 0, 0)
-    val endOfMonth = LocalDateTime(
-        currentMonth.year,
-        currentMonth.month,
-        currentMonth.month.length(currentMonth.year % 4 == 0),
-        23,
-        59
-    )
-    
-    val appointmentsInMonth by viewModel.getAppointmentsBetweenDates(startOfMonth, endOfMonth)
-        .collectAsState(initial = emptyList())
+
+    // Use remember to avoid recalculating dates on every recomposition
+    val (startOfMonth, endOfMonth) = remember(currentMonth) {
+        val start = LocalDateTime(currentMonth.year, currentMonth.month, 1, 0, 0)
+        val end = LocalDateTime(
+            currentMonth.year,
+            currentMonth.month,
+            currentMonth.month.length(currentMonth.year % 4 == 0),
+            23,
+            59
+        )
+        start to end
+    }
+
+    // Use LaunchedEffect to properly manage Flow collection and cancellation
+    var appointmentsInMonth by remember { mutableStateOf<List<Appointment>>(emptyList()) }
+    LaunchedEffect(currentMonth) {
+        viewModel.getAppointmentsBetweenDates(startOfMonth, endOfMonth)
+            .collect { appointments ->
+                appointmentsInMonth = appointments
+            }
+    }
     
     // Filter out alarms - only show regular appointments in calendar
     val appointmentsOnly = remember(appointmentsInMonth) {

@@ -39,9 +39,16 @@ class MedicationRepository @Inject constructor(
     suspend fun deactivateMedication(medicationId: Long) = 
         medicationDao.deactivateMedication(medicationId)
     
-    fun searchMedications(query: String): Flow<List<Medication>> = 
+    fun searchMedications(query: String): Flow<List<Medication>> =
         medicationDao.searchMedications(query)
-    
-    suspend fun getAllMedicationLogs(): List<MedicationLog> = 
+
+    suspend fun getMedicationsByIds(medicationIds: List<Long>): List<Medication> =
+        if (medicationIds.isEmpty()) emptyList() else medicationDao.getMedicationsByIds(medicationIds)
+
+    fun getMedicationsByIdsFlow(medicationIds: List<Long>): Flow<List<Medication>> =
+        if (medicationIds.isEmpty()) kotlinx.coroutines.flow.flowOf(emptyList())
+        else medicationDao.getMedicationsByIdsFlow(medicationIds)
+
+    suspend fun getAllMedicationLogs(): List<MedicationLog> =
         medicationLogDao.getAllLogs()
 }

@@ -4,7 +4,17 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.datetime.LocalDateTime
 
-@Entity(tableName = "appointments")
+@Entity(
+    tableName = "appointments",
+    indices = [
+        androidx.room.Index("startTime"),
+        androidx.room.Index("endTime"),
+        androidx.room.Index("eventType"),
+        androidx.room.Index("category"),
+        androidx.room.Index(value = ["startTime", "eventType"]),
+        androidx.room.Index(value = ["eventType", "isRecurring"])
+    ]
+)
 data class Appointment(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,

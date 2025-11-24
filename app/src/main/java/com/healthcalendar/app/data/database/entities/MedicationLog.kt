@@ -14,6 +14,12 @@ import kotlinx.datetime.LocalDateTime
             childColumns = ["medicationId"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        androidx.room.Index("medicationId"),
+        androidx.room.Index("scheduledTime"),
+        androidx.room.Index("status"),
+        androidx.room.Index(value = ["medicationId", "scheduledTime"])
     ]
 )
 data class MedicationLog(

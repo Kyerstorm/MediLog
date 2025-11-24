@@ -10,6 +10,9 @@ interface AppointmentDao {
     
     @Query("SELECT * FROM appointments ORDER BY startTime ASC")
     fun getAllAppointments(): Flow<List<Appointment>>
+
+    @Query("SELECT * FROM appointments ORDER BY startTime ASC")
+    suspend fun getAllAppointmentsSync(): List<Appointment>
     
     @Query("SELECT * FROM appointments WHERE startTime >= :startDate AND startTime <= :endDate ORDER BY startTime ASC")
     fun getAppointmentsBetweenDates(startDate: LocalDateTime, endDate: LocalDateTime): Flow<List<Appointment>>

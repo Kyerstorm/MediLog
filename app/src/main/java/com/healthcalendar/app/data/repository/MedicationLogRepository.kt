@@ -18,8 +18,11 @@ class MedicationLogRepository @Inject constructor(
     fun getLogsForMedication(medicationId: Long): Flow<List<MedicationLog>> = 
         logDao.getLogsForMedication(medicationId)
     
-    fun getLogsBetweenDates(startDate: LocalDateTime, endDate: LocalDateTime): Flow<List<MedicationLog>> = 
+    fun getLogsBetweenDates(startDate: LocalDateTime, endDate: LocalDateTime): Flow<List<MedicationLog>> =
         logDao.getLogsBetweenDates(startDate, endDate)
+
+    suspend fun getLogsBetweenDatesSync(startDate: LocalDateTime, endDate: LocalDateTime, limit: Int = 1000): List<MedicationLog> =
+        logDao.getLogsBetweenDatesSync(startDate, endDate, limit)
     
     fun getLogsByStatus(status: MedicationStatus): Flow<List<MedicationLog>> = 
         logDao.getLogsByStatus(status)

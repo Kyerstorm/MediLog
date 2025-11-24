@@ -102,6 +102,9 @@ dependencies {
     
     // Document Scanning - ML Kit
     implementation("com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1")
+
+    // Biometric authentication
+    implementation("androidx.biometric:biometric:1.1.0")
     
     // Camera and Gallery
     implementation("androidx.camera:camera-camera2:1.3.1")

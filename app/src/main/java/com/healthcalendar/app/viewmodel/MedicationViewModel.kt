@@ -68,7 +68,11 @@ class MedicationViewModel @Inject constructor(
     fun setShowDiscontinued(value: Boolean) {
         _showDiscontinued.value = value
     }
-    
+
+    suspend fun getMedicationsByIds(medicationIds: List<Long>): List<Medication> {
+        return medicationRepository.getMedicationsByIds(medicationIds)
+    }
+
     fun loadMedication(medicationId: Long) {
         viewModelScope.launch {
             try {
@@ -175,7 +179,8 @@ class MedicationViewModel @Inject constructor(
                 _uiState.value = UiState.Loading
                 
                 // Cancel all alarms for this medication
-                scheduleRepository.getSchedulesForMedication(medication.id).first().forEach { schedule ->
+                val schedules = scheduleRepository.getSchedulesForMedicationSync(medication.id)
+                schedules.forEach { schedule ->
                     alarmScheduler.cancelAlarm(schedule.id)
                 }
                 
@@ -273,9 +278,9 @@ class MedicationViewModel @Inject constructor(
     private suspend fun deleteAlarmsForMedication(medicationId: Long) {
         try {
             // Get all appointments that are alarms linked to this medication
-            val allAppointments = appointmentRepository.getAllAppointments().first()
-            val medicationAlarms = allAppointments.filter { 
-                it.medicationId == medicationId && it.eventType == EventType.ALARM 
+            val allAppointments = appointmentRepository.getAllAppointmentsSync()
+            val medicationAlarms = allAppointments.filter {
+                it.medicationId == medicationId && it.eventType == EventType.ALARM
             }
             
             // Delete each alarm

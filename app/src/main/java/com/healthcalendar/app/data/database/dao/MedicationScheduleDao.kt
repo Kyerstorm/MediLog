@@ -9,6 +9,9 @@ interface MedicationScheduleDao {
     
     @Query("SELECT * FROM medication_schedules WHERE medicationId = :medicationId AND isEnabled = 1")
     fun getSchedulesForMedication(medicationId: Long): Flow<List<MedicationSchedule>>
+
+    @Query("SELECT * FROM medication_schedules WHERE medicationId = :medicationId AND isEnabled = 1")
+    suspend fun getSchedulesForMedicationSync(medicationId: Long): List<MedicationSchedule>
     
     @Query("SELECT * FROM medication_schedules WHERE isEnabled = 1")
     fun getAllActiveSchedules(): Flow<List<MedicationSchedule>>

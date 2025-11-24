@@ -27,6 +27,9 @@ class UserPreferencesRepository(private val context: Context) {
         val AUTO_BACKUP = booleanPreferencesKey("auto_backup")
         val BACKUP_FREQUENCY = stringPreferencesKey("backup_frequency")
         val EXPORT_FORMAT = stringPreferencesKey("export_format")
+        val PASSCODE_ENABLED = booleanPreferencesKey("passcode_enabled")
+        val PASSCODE_HASH = stringPreferencesKey("passcode_hash")
+        val BIOMETRIC_ENABLED = booleanPreferencesKey("biometric_enabled")
     }
     
     enum class ThemeMode {
@@ -111,6 +114,19 @@ class UserPreferencesRepository(private val context: Context) {
         val formatString = preferences[PreferencesKeys.EXPORT_FORMAT] ?: ExportFormat.CSV.name
         ExportFormat.valueOf(formatString)
     }
+
+    // Security - passcode
+    val passcodeEnabled: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.PASSCODE_ENABLED] ?: false
+    }
+
+    val passcodeHash: Flow<String?> = context.dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.PASSCODE_HASH]
+    }
+
+    val biometricEnabled: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.BIOMETRIC_ENABLED] ?: false
+    }
     
     // Setters
     suspend fun setThemeMode(themeMode: ThemeMode) {
@@ -176,6 +192,32 @@ class UserPreferencesRepository(private val context: Context) {
     suspend fun setExportFormat(format: ExportFormat) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.EXPORT_FORMAT] = format.name
+        }
+    }
+
+    // Security setters
+    suspend fun setPasscodeHash(hash: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.PASSCODE_HASH] = hash
+        }
+    }
+
+    suspend fun setPasscodeEnabled(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.PASSCODE_ENABLED] = enabled
+        }
+    }
+
+    suspend fun setBiometricEnabled(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.BIOMETRIC_ENABLED] = enabled
+        }
+    }
+
+    suspend fun clearPasscode() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(PreferencesKeys.PASSCODE_HASH)
+            preferences[PreferencesKeys.PASSCODE_ENABLED] = false
         }
     }
 }

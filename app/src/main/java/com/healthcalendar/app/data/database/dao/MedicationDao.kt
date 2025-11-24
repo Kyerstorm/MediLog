@@ -33,4 +33,10 @@ interface MedicationDao {
     
     @Query("SELECT * FROM medications WHERE name LIKE '%' || :query || '%' AND isActive = 1")
     fun searchMedications(query: String): Flow<List<Medication>>
+
+    @Query("SELECT * FROM medications WHERE id IN (:medicationIds)")
+    suspend fun getMedicationsByIds(medicationIds: List<Long>): List<Medication>
+
+    @Query("SELECT * FROM medications WHERE id IN (:medicationIds)")
+    fun getMedicationsByIdsFlow(medicationIds: List<Long>): Flow<List<Medication>>
 }

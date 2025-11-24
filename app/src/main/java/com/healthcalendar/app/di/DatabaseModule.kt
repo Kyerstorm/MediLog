@@ -84,6 +84,30 @@ object DatabaseModule {
             database.execSQL("ALTER TABLE app_settings ADD COLUMN customThemeJson TEXT DEFAULT NULL")
         }
     }
+
+    // Migration from version 15 to 16: Add indexes for performance optimization
+    private val MIGRATION_15_16 = object : Migration(15, 16) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            // Add indexes to medication_logs
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_medication_logs_medicationId ON medication_logs(medicationId)")
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_medication_logs_scheduledTime ON medication_logs(scheduledTime)")
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_medication_logs_status ON medication_logs(status)")
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_medication_logs_medicationId_scheduledTime ON medication_logs(medicationId, scheduledTime)")
+
+            // Add indexes to medication_schedules
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_medication_schedules_medicationId ON medication_schedules(medicationId)")
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_medication_schedules_isEnabled ON medication_schedules(isEnabled)")
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_medication_schedules_medicationId_isEnabled ON medication_schedules(medicationId, isEnabled)")
+
+            // Add indexes to appointments
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_appointments_startTime ON appointments(startTime)")
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_appointments_endTime ON appointments(endTime)")
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_appointments_eventType ON appointments(eventType)")
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_appointments_category ON appointments(category)")
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_appointments_startTime_eventType ON appointments(startTime, eventType)")
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_appointments_eventType_isRecurring ON appointments(eventType, isRecurring)")
+        }
+    }
     
     @Provides
     @Singleton
@@ -100,7 +124,8 @@ object DatabaseModule {
                 MIGRATION_11_12,
                 MIGRATION_12_13,
                 MIGRATION_13_14,
-                MIGRATION_14_15
+                MIGRATION_14_15,
+                MIGRATION_15_16
             )
             .fallbackToDestructiveMigration() // Only as last resort
             .build()

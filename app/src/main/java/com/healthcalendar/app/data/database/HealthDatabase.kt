@@ -18,7 +18,7 @@ import com.healthcalendar.app.data.database.entities.*
         Note::class,
         AppSettings::class
     ],
-    version = 15,
+    version = 16,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

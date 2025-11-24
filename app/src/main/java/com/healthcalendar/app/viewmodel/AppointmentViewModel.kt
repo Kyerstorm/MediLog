@@ -36,6 +36,19 @@ class AppointmentViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+    // Sorted alarms for AlarmsScreen - filtering and sorting done in background thread
+    val sortedAlarms: StateFlow<List<Appointment>> = appointmentRepository.getAllAppointments()
+        .map { allAppointments ->
+            allAppointments
+                .filter { it.eventType == EventType.ALARM }
+                .sortedWith(compareBy({ it.startTime.date }, { it.startTime.time }))
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
     
     val appSettings = appSettingsRepository.settings
         .stateIn(
