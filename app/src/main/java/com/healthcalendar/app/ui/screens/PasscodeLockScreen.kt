@@ -54,40 +54,18 @@ fun PasscodeLockScreen(
     // Validate PIN length
     val validPinLength = pinLength.coerceIn(4, 6)
 
-    // Attempt biometric authentication automatically if enabled and available
+    // Check if biometric authentication is available
     val bm = BiometricManager.from(context)
     val canBiometric = try { bm.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS } catch (e: Exception) { false }
 
-    if (biometricEnabled && canBiometric) {
+    // Setup biometric authentication components
     val activity = (context as? FragmentActivity)
-        val executor: Executor = ContextCompat.getMainExecutor(context)
-        val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Unlock ${context.applicationInfo.loadLabel(context.packageManager)}")
-            .setSubtitle("Use biometric to unlock")
-            .setNegativeButtonText("Use passcode")
-            .build()
-
-        LaunchedEffect(Unit) {
-            try {
-                activity?.let {
-                    val biometricPrompt = BiometricPrompt(it, executor, object : BiometricPrompt.AuthenticationCallback() {
-                        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                            super.onAuthenticationSucceeded(result)
-                            onUnlocked()
-                        }
-
-                        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                            super.onAuthenticationError(errorCode, errString)
-                            // ignore and fallback to passcode
-                        }
-                    })
-                    biometricPrompt.authenticate(promptInfo)
-                }
-            } catch (e: Exception) {
-                // fallback to passcode UI
-            }
-        }
-    }
+    val executor: Executor = ContextCompat.getMainExecutor(context)
+    val promptInfo = BiometricPrompt.PromptInfo.Builder()
+        .setTitle("Unlock ${context.applicationInfo.loadLabel(context.packageManager)}")
+        .setSubtitle("Use biometric to unlock")
+        .setNegativeButtonText("Use passcode")
+        .build()
 
     // Success state for animation
     var showSuccess by remember { mutableStateOf(false) }
@@ -204,9 +182,51 @@ fun PasscodeLockScreen(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            // Pulsing biometric icon (if enabled)
+                            // Pulsing biometric icon with tap-to-retry (if enabled)
                             if (biometricEnabled && canBiometric) {
-                                PulsingBiometricIcon()
+                                BiometricPromptButton(
+                                    onBiometricClick = {
+                                        // Trigger biometric prompt
+                                        activity?.let {
+                                            val biometricPrompt = BiometricPrompt(
+                                                it,
+                                                executor,
+                                                object : BiometricPrompt.AuthenticationCallback() {
+                                                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                                                        super.onAuthenticationSucceeded(result)
+                                                        showSuccess = true
+                                                        coroutineScope.launch {
+                                                            delay(800)
+                                                            onUnlocked()
+                                                        }
+                                                    }
+
+                                                    override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                                                        super.onAuthenticationError(errorCode, errString)
+                                                        error = when (errorCode) {
+                                                            BiometricPrompt.ERROR_LOCKOUT ->
+                                                                "Too many attempts. Try passcode."
+                                                            BiometricPrompt.ERROR_LOCKOUT_PERMANENT ->
+                                                                "Biometric locked. Use passcode."
+                                                            BiometricPrompt.ERROR_NO_BIOMETRICS ->
+                                                                "No biometric enrolled. Use passcode."
+                                                            BiometricPrompt.ERROR_CANCELED -> null
+                                                            BiometricPrompt.ERROR_USER_CANCELED -> null
+                                                            BiometricPrompt.ERROR_NEGATIVE_BUTTON -> null
+                                                            else -> "Biometric failed. Try again."
+                                                        }
+                                                    }
+
+                                                    override fun onAuthenticationFailed() {
+                                                        super.onAuthenticationFailed()
+                                                        error = "Not recognized. Try again."
+                                                    }
+                                                }
+                                            )
+                                            biometricPrompt.authenticate(promptInfo)
+                                        }
+                                    }
+                                )
                                 Spacer(modifier = Modifier.height(16.dp))
                             }
 
@@ -475,6 +495,62 @@ private fun SuccessCheckmark() {
                 )
             }
         }
+    }
+}
+
+/**
+ * Tappable biometric prompt button with pulsing animation
+ */
+@Composable
+private fun BiometricPromptButton(
+    onBiometricClick: () -> Unit
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.15f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "scale"
+    )
+
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0.6f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha"
+    )
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        IconButton(
+            onClick = onBiometricClick,
+            modifier = Modifier.size(64.dp)
+        ) {
+            Icon(
+                Icons.Filled.Fingerprint,
+                contentDescription = "Use Biometric",
+                modifier = Modifier
+                    .size(48.dp)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        this.alpha = alpha
+                    },
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+        Text(
+            "Tap to use biometric",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
