@@ -584,6 +584,18 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun incrementFailedAttempts() {
+        viewModelScope.launch {
+            preferencesRepository.incrementFailedAttempts()
+        }
+    }
+
+    fun resetFailedAttempts() {
+        viewModelScope.launch {
+            preferencesRepository.resetFailedAttempts()
+        }
+    }
+
     private fun sha256(input: String): String {
         val md = java.security.MessageDigest.getInstance("SHA-256")
         val bytes = md.digest(input.toByteArray(Charsets.UTF_8))

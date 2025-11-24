@@ -54,6 +54,30 @@ fun PasscodeLockScreen(
     // Validate PIN length
     val validPinLength = pinLength.coerceIn(4, 6)
 
+    // Failed attempt tracking
+    val maxAttempts by settingsViewModel.maxFailedAttempts.collectAsState()
+    val failedCount by settingsViewModel.failedAttemptCount.collectAsState()
+    val remainingAttempts = (maxAttempts - failedCount).coerceAtLeast(0)
+
+    // Check lockout status
+    var isLockedOut by remember { mutableStateOf(false) }
+    var lockoutSecondsRemaining by remember { mutableStateOf(0L) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            // Check lockout every second
+            delay(1000)
+            // Simple check based on failed attempts
+            if (failedCount >= maxAttempts) {
+                isLockedOut = true
+                lockoutSecondsRemaining = (lockoutSecondsRemaining - 1).coerceAtLeast(0)
+                if (lockoutSecondsRemaining <= 0) {
+                    isLockedOut = false
+                }
+            }
+        }
+    }
+
     // Check if biometric authentication is available
     val bm = BiometricManager.from(context)
     val canBiometric = try { bm.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS } catch (e: Exception) { false }
@@ -289,15 +313,24 @@ fun PasscodeLockScreen(
                                         if (input.length == validPinLength) {
                                             val enteredHash = sha256(input)
                                             if (passHash != null && passHash == enteredHash) {
+                                                // Success
+                                                settingsViewModel.resetFailedAttempts()
                                                 showSuccess = true
-                                                // Delay before unlocking to show animation
                                                 coroutineScope.launch {
                                                     delay(800)
                                                     onUnlocked()
                                                 }
                                             } else {
-                                                error = "Incorrect passcode"
+                                                // Failed
+                                                settingsViewModel.incrementFailedAttempts()
+                                                error = "Incorrect passcode ($remainingAttempts attempts left)"
                                                 input = ""
+
+                                                // Check if should lockout
+                                                if (remainingAttempts <= 1) {
+                                                    isLockedOut = true
+                                                    lockoutSecondsRemaining = 30L // Start with 30 seconds
+                                                }
                                             }
                                         }
                                     }
@@ -316,6 +349,14 @@ fun PasscodeLockScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
             }
+        }
+
+        // Lockout overlay
+        if (isLockedOut) {
+            LockoutOverlay(
+                remainingSeconds = lockoutSecondsRemaining,
+                onDismiss = { /* Cannot dismiss */ }
+            )
         }
     }
 }
@@ -551,6 +592,87 @@ private fun BiometricPromptButton(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+    }
+}
+
+/**
+ * Lockout overlay shown when too many failed attempts
+ */
+@Composable
+private fun LockoutOverlay(
+    remainingSeconds: Long,
+    onDismiss: () -> Unit
+) {
+    val minutes = remainingSeconds / 60
+    val seconds = remainingSeconds % 60
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.95f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(0.85f)
+                .padding(24.dp),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.errorContainer
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Lock,
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp),
+                    tint = MaterialTheme.colorScheme.error
+                )
+
+                Text(
+                    "Too Many Attempts",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+
+                Text(
+                    "Please wait before trying again",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+
+                // Countdown timer
+                Surface(
+                    modifier = Modifier.size(120.dp),
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.error
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                String.format("%02d:%02d", minutes, seconds),
+                                style = MaterialTheme.typography.headlineLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onError
+                            )
+                            Text(
+                                "remaining",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onError.copy(alpha = 0.7f)
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
