@@ -1,0 +1,183 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:kspDebugKotlin UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:hiltAggregateDepsDebug UP-TO-DATE
+> Task :app:hiltJavaCompileDebug
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJavaResource UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app:buildKotlinToolingMetadata UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:javaPreCompileRelease UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:mergeReleaseJniLibFolders UP-TO-DATE
+> Task :app:mergeReleaseNativeLibs UP-TO-DATE
+> Task :app:stripReleaseDebugSymbols UP-TO-DATE
+> Task :app:extractReleaseNativeSymbolTables UP-TO-DATE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:checkReleaseDuplicateClasses UP-TO-DATE
+> Task :app:desugarReleaseFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexRelease UP-TO-DATE
+> Task :app:mergeReleaseArtProfile UP-TO-DATE
+> Task :app:mergeReleaseShaders UP-TO-DATE
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets UP-TO-DATE
+> Task :app:compressReleaseAssets UP-TO-DATE
+> Task :app:optimizeReleaseResources UP-TO-DATE
+> Task :app:collectReleaseDependencies UP-TO-DATE
+> Task :app:sdkReleaseDependencyData UP-TO-DATE
+> Task :app:validateSigningRelease UP-TO-DATE
+> Task :app:writeReleaseAppMetadata UP-TO-DATE
+> Task :app:writeReleaseSigningConfigVersions UP-TO-DATE
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:generateDebugAndroidTestResValues UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :app:preReleaseUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileReleaseUnitTest UP-TO-DATE
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:kspReleaseKotlin
+> Task :app:generateDebugLintReportModel
+> Task :app:kspDebugUnitTestKotlin NO-SOURCE
+> Task :app:compileDebugUnitTestKotlin NO-SOURCE
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:transformDebugClassesWithAsm
+> Task :app:compileReleaseKotlin
+> Task :app:lintAnalyzeDebug
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app:mergeProjectDexDebug
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleDebug
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:hiltAggregateDepsDebugUnitTest
+> Task :app:hiltJavaCompileDebugUnitTest NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes NO-SOURCE
+> Task :app:transformDebugUnitTestClassesWithAsm
+> Task :app:testDebugUnitTest NO-SOURCE
+
+> Task :app:compileReleaseKotlin
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/MainActivity.kt:58:17 Variable 'permission' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/MainActivity.kt:59:17 Variable 'isGranted' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/data/api/LocalNHSMedicationService.kt:109:32 'genericName: String?' is deprecated. No longer stored locally - open URL in browser instead
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/data/api/LocalNHSMedicationService.kt:116:32 'brandNames: List<String>?' is deprecated. No longer stored locally - open URL in browser instead
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:22:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:30:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:38:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:57:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:65:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:73:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:81:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:90:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/MedicalHistoryScreen.kt:172:9 Variable 'columns' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:789:21 Variable 'obj' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:1313:30 Parameter 'selectedColorHex' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/calendar/DailyScheduleScreen.kt:320:5 Parameter 'onReminderClick' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/calendar/DailyScheduleScreen.kt:456:5 Parameter 'selectedDate' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/documents/DocumentViewerScreen.kt:69:9 Variable 'showTypeDropdown' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/documents/DocumentViewerScreen.kt:580:41 Unnecessary safe call on a non-null receiver of type ScannedDocumentEntity?
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/medication/MedicationListScreen.kt:37:9 Variable 'discontinuedCount' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/settings/SettingsScreen.kt:47:22 'getParcelableExtra(String!): T?' is deprecated. Deprecated in Java
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/theme/ThemeProvider.kt:664:13 'when' is exhaustive so 'else' is redundant here
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/util/AccessibilityHelper.kt:48:44 'obtain(): AccessibilityEvent!' is deprecated. Deprecated in Java
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/util/BackupManager.kt:117:40 'REPLACE' is deprecated. Deprecated in favor of the UPDATE policy. UPDATE policy has very similar behavior: next run of the worker with the same unique name, going to have new specification. However, UPDATE has better defaults: unlike REPLACE policy UPDATE won't cancel the worker if it is currently running and new worker specification will be used only on the next run. Also it preserves original enqueue time, so unlike REPLACE period isn't reset. If you want to preserve previous behavior, CANCEL_AND_REENQUEUE should be used.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/util/DataImporter.kt:159:51 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/util/DataImporter.kt:174:53 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/DocumentScannerViewModel.kt:58:28 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/MedicationViewModel.kt:144:29 Variable 'scheduleId' is never used
+
+> Task :app:compileReleaseJavaWithJavac
+> Task :app:hiltAggregateDepsRelease
+> Task :app:hiltJavaCompileRelease
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:processReleaseJavaRes
+> Task :app:bundleReleaseClassesToCompileJar
+> Task :app:kspReleaseUnitTestKotlin NO-SOURCE
+> Task :app:compileReleaseUnitTestKotlin NO-SOURCE
+> Task :app:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :app:transformReleaseClassesWithAsm
+> Task :app:mergeReleaseJavaResource
+> Task :app:dexBuilderRelease
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:bundleReleaseClassesToRuntimeJar
+> Task :app:hiltAggregateDepsReleaseUnitTest
+> Task :app:hiltJavaCompileReleaseUnitTest NO-SOURCE
+> Task :app:processReleaseUnitTestJavaRes NO-SOURCE
+> Task :app:transformReleaseUnitTestClassesWithAsm
+> Task :app:testReleaseUnitTest NO-SOURCE
+> Task :app:test UP-TO-DATE
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:mergeDexRelease
+
+> Task :app:lintReportDebug
+Wrote HTML report to file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/build/reports/lint-results-debug.html
+
+> Task :app:lintDebug
+> Task :app:lint
+> Task :app:check
+> Task :app:compileReleaseArtProfile
+> Task :app:lintVitalReportRelease SKIPPED
+> Task :app:lintVitalRelease SKIPPED
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:assembleRelease
+> Task :app:assemble
+> Task :app:build
+
+[Incubating] Problems report is available at: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.0-milestone-1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 56s
+103 actionable tasks: 35 executed, 68 up-to-date

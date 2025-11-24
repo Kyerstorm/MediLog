@@ -1,5 +1,13 @@
 package com.healthcalendar.app.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -36,6 +45,12 @@ fun HomeScreen(
     // Filter out medication-related appointments
     val upcomingAppointments = remember(allAppointments) {
         allAppointments.filter { it.medicationId == null }
+    }
+    
+    // Animation states
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        visible = true
     }
     
     Column(modifier = Modifier.fillMaxSize()) {
@@ -73,32 +88,63 @@ fun HomeScreen(
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    item { WelcomeCard() }
-                    item { QuickActionsCard(navController) }
+                    item { 
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = slideInVertically(initialOffsetY = { 50 }) + fadeIn(),
+                            modifier = Modifier.animateContentSize()
+                        ) {
+                            WelcomeCard() 
+                        }
+                    }
+                    item { 
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 100)) + fadeIn(animationSpec = tween(delayMillis = 100)),
+                            modifier = Modifier.animateContentSize()
+                        ) {
+                            QuickActionsCard(navController) 
+                        }
+                    }
                     
                     item {
-                        Text(
-                            text = "Upcoming Appointments",
-                            style = MaterialTheme.typography.headlineSmall,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 200)) + fadeIn(animationSpec = tween(delayMillis = 200))
+                        ) {
+                            Text(
+                                text = "Upcoming Appointments",
+                                style = MaterialTheme.typography.headlineSmall,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
                     }
                     
                     if (upcomingAppointments.isEmpty()) {
                         item {
-                            EmptyStateCard(
-                                icon = Icons.Filled.DateRange,
-                                message = "No upcoming appointments",
-                                actionText = "View Calendar",
-                                onAction = { navController.navigate(Screen.Calendar.route) }
-                            )
+                            AnimatedVisibility(
+                                visible = visible,
+                                enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 300)) + fadeIn(animationSpec = tween(delayMillis = 300))
+                            ) {
+                                EmptyStateCard(
+                                    icon = Icons.Filled.DateRange,
+                                    message = "No upcoming appointments",
+                                    actionText = "View Calendar",
+                                    onAction = { navController.navigate(Screen.Calendar.route) }
+                                )
+                            }
                         }
                     } else {
                         items(upcomingAppointments.take(3)) { appointment ->
-                            AppointmentCard(
-                                appointment = appointment,
-                                onEdit = { navController.navigate(Screen.EditAppointment.createRoute(appointment.id)) }
-                            )
+                            AnimatedVisibility(
+                                visible = visible,
+                                enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 300)) + fadeIn(animationSpec = tween(delayMillis = 300))
+                            ) {
+                                AppointmentCard(
+                                    appointment = appointment,
+                                    onEdit = { navController.navigate(Screen.EditAppointment.createRoute(appointment.id)) }
+                                )
+                            }
                         }
                     }
                 }
@@ -111,37 +157,57 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item {
-                        Text(
-                            text = "Your Medications",
-                            style = MaterialTheme.typography.headlineSmall,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 200)) + fadeIn(animationSpec = tween(delayMillis = 200))
+                        ) {
+                            Text(
+                                text = "Your Medications",
+                                style = MaterialTheme.typography.headlineSmall,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
                     }
                     
                     if (medications.isEmpty()) {
                         item {
-                            EmptyStateCard(
-                                icon = Icons.Filled.Favorite,
-                                message = "No medications added yet",
-                                actionText = "Add Medication",
-                                onAction = { navController.navigate(Screen.AddMedication.route) }
-                            )
+                            AnimatedVisibility(
+                                visible = visible,
+                                enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 300)) + fadeIn(animationSpec = tween(delayMillis = 300))
+                            ) {
+                                EmptyStateCard(
+                                    icon = Icons.Filled.Favorite,
+                                    message = "No medications added yet",
+                                    actionText = "Add Medication",
+                                    onAction = { navController.navigate(Screen.AddMedication.route) }
+                                )
+                            }
                         }
                     } else {
                         items(medications.take(3)) { medication ->
-                            MedicationCard(
-                                medication = medication,
-                                onClick = { navController.navigate(Screen.MedicationDetail.createRoute(medication.id)) }
-                            )
+                            AnimatedVisibility(
+                                visible = visible,
+                                enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 300)) + fadeIn(animationSpec = tween(delayMillis = 300))
+                            ) {
+                                MedicationCard(
+                                    medication = medication,
+                                    onClick = { navController.navigate(Screen.MedicationDetail.createRoute(medication.id)) }
+                                )
+                            }
                         }
                         
                         if (medications.size > 3) {
                             item {
-                                TextButton(
-                                    onClick = { navController.navigate(Screen.MedicationList.route) },
-                                    modifier = Modifier.fillMaxWidth()
+                                AnimatedVisibility(
+                                    visible = visible,
+                                    enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 400)) + fadeIn(animationSpec = tween(delayMillis = 400))
                                 ) {
-                                    Text("View all medications (${medications.size})")
+                                    TextButton(
+                                        onClick = { navController.navigate(Screen.MedicationList.route) },
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Text("View all medications (${medications.size})")
+                                    }
                                 }
                             }
                         }
@@ -156,69 +222,120 @@ fun HomeScreen(
                     .padding(padding),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                item { WelcomeCard() }
-                item { QuickActionsCard(navController) }
+                item { 
+                    AnimatedVisibility(
+                        visible = visible,
+                        enter = slideInVertically(initialOffsetY = { 50 }) + fadeIn(),
+                        modifier = Modifier.animateContentSize()
+                    ) {
+                        WelcomeCard() 
+                    }
+                }
+                item { 
+                    AnimatedVisibility(
+                        visible = visible,
+                        enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 100)) + fadeIn(animationSpec = tween(delayMillis = 100)),
+                        modifier = Modifier.animateContentSize()
+                    ) {
+                        QuickActionsCard(navController) 
+                    }
+                }
                 
                 item {
-                    Text(
-                        text = "Your Medications",
-                        style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
+                    AnimatedVisibility(
+                        visible = visible,
+                        enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 200)) + fadeIn(animationSpec = tween(delayMillis = 200))
+                    ) {
+                        Text(
+                            text = "Your Medications",
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
                 }
                 
                 if (medications.isEmpty()) {
                     item {
-                        EmptyStateCard(
-                            icon = Icons.Filled.Favorite,
-                            message = "No medications added yet",
-                            actionText = "Add Medication",
-                            onAction = { navController.navigate(Screen.AddMedication.route) }
-                        )
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 300)) + fadeIn(animationSpec = tween(delayMillis = 300))
+                        ) {
+                            EmptyStateCard(
+                                icon = Icons.Filled.Favorite,
+                                message = "No medications added yet",
+                                actionText = "Add Medication",
+                                onAction = { navController.navigate(Screen.AddMedication.route) }
+                            )
+                        }
                     }
                 } else {
                     items(medications.take(3)) { medication ->
-                        MedicationCard(
-                            medication = medication,
-                            onClick = { navController.navigate(Screen.MedicationDetail.createRoute(medication.id)) }
-                        )
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 300)) + fadeIn(animationSpec = tween(delayMillis = 300))
+                        ) {
+                            MedicationCard(
+                                medication = medication,
+                                onClick = { navController.navigate(Screen.MedicationDetail.createRoute(medication.id)) }
+                            )
+                        }
                     }
                     
                     if (medications.size > 3) {
                         item {
-                            TextButton(
-                                onClick = { navController.navigate(Screen.MedicationList.route) },
-                                modifier = Modifier.fillMaxWidth()
+                            AnimatedVisibility(
+                                visible = visible,
+                                enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 400)) + fadeIn(animationSpec = tween(delayMillis = 400))
                             ) {
-                                Text("View all medications (${medications.size})")
+                                TextButton(
+                                    onClick = { navController.navigate(Screen.MedicationList.route) },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("View all medications (${medications.size})")
+                                }
                             }
                         }
                     }
                 }
                 
                 item {
-                    Text(
-                        text = "Upcoming Appointments",
-                        style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
+                    AnimatedVisibility(
+                        visible = visible,
+                        enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 500)) + fadeIn(animationSpec = tween(delayMillis = 500))
+                    ) {
+                        Text(
+                            text = "Upcoming Appointments",
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
                 }
                 
                 if (upcomingAppointments.isEmpty()) {
                     item {
-                        EmptyStateCard(
-                            icon = Icons.Filled.Assessment,
-                            message = "Track your medication adherence",
-                            actionText = "View Medical History",
-                            onAction = { navController.navigate(Screen.MedicalHistory.route) }
-                        )
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 600)) + fadeIn(animationSpec = tween(delayMillis = 600))
+                        ) {
+                            EmptyStateCard(
+                                icon = Icons.Filled.Assessment,
+                                message = "Track your medication adherence",
+                                actionText = "View Medical History",
+                                onAction = { navController.navigate(Screen.MedicalHistory.route) }
+                            )
+                        }
                     }
                 } else {
                     items(upcomingAppointments.take(3)) { appointment ->
-                        AppointmentCard(
-                            appointment = appointment,
-                            onEdit = { navController.navigate(Screen.EditAppointment.createRoute(appointment.id)) }
-                        )
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = slideInVertically(initialOffsetY = { 50 }, animationSpec = tween(delayMillis = 600)) + fadeIn(animationSpec = tween(delayMillis = 600))
+                        ) {
+                            AppointmentCard(
+                                appointment = appointment,
+                                onEdit = { navController.navigate(Screen.EditAppointment.createRoute(appointment.id)) }
+                            )
+                        }
                     }
                 }
             }
@@ -313,12 +430,21 @@ private fun QuickActionButton(
     label: String,
     onClick: () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(if (isPressed) 0.9f else 1f, label = "scale")
+
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+        }
     ) {
         FilledIconButton(
             onClick = onClick,
-            modifier = Modifier.size(56.dp)
+            modifier = Modifier.size(56.dp),
+            interactionSource = interactionSource
         ) {
             Icon(icon, contentDescription = label)
         }
@@ -336,9 +462,19 @@ private fun MedicationCard(
     medication: com.healthcalendar.app.data.database.entities.Medication,
     onClick: () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(if (isPressed) 0.95f else 1f, label = "scale")
+
     Card(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            },
+        interactionSource = interactionSource
     ) {
         Row(
             modifier = Modifier

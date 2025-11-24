@@ -1,0 +1,79 @@
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:kspDebugKotlin UP-TO-DATE
+
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:48:32 Unresolved reference: fontScale
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:49:35 Unresolved reference: highContrast
+> Task :app:compileDebugKotlin
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:50:33 Unresolved reference: amoledMode
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:51:31 Unresolved reference: language
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:52:40 Unresolved reference: notificationSound
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:53:30 Unresolved reference: vibrate
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:54:33 Unresolved reference: autoBackup
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:55:38 Unresolved reference: backupFrequency
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:56:35 Unresolved reference: exportFormat
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:71:39 Unresolved reference: biometricEnabled
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:284:86 Unresolved reference: it
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:337:88 Unresolved reference: it
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:396:50 Unresolved reference: passcodeEnabled
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:422:57 Unresolved reference: passcodeEnabled
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:539:44 Comparison of incompatible enums 'UserPreferencesRepository.NotificationSound' and '[Error type: Error delegation type for viewModel.notificationSound.collectAsState()]' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:672:38 Unresolved reference: passcodeHash
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:171:29 'when' expression must be exhaustive, add necessary 'else' branch
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:171:35 Unresolved reference: backupFrequency
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:172:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.BackupFrequency' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:173:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.BackupFrequency' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:174:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.BackupFrequency' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:186:17 Unresolved reference: autoBackup
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:232:30 Unresolved reference: exportFormat
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:233:31 'when' expression must be exhaustive, add necessary 'else' branch
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:234:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.ExportFormat' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:235:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.ExportFormat' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:236:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.ExportFormat' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:237:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.ExportFormat' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:257:30 Unresolved reference: exportFormat
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:259:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.ExportFormat' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:260:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.ExportFormat' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:281:30 Unresolved reference: exportFormat
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:283:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.ExportFormat' is always unsuccessful
+e: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/SettingsViewModel.kt:284:21 Comparison of incompatible enums '[Error type: Error property type]' and 'UserPreferencesRepository.ExportFormat' is always unsuccessful
+
+> Task :app:compileDebugKotlin FAILED
+
+[Incubating] Problems report is available at: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.0-milestone-1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 7s
+15 actionable tasks: 2 executed, 13 up-to-date

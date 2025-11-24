@@ -2,6 +2,8 @@ package com.healthcalendar.app.ui.navigation
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -208,21 +210,47 @@ fun AppNavigation() {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = Screen.Home.route
+                startDestination = Screen.Home.route,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { 300 },
+                        animationSpec = spring(stiffness = Spring.StiffnessMedium)
+                    ) + fadeIn(animationSpec = spring(stiffness = Spring.StiffnessMedium))
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { -300 },
+                        animationSpec = spring(stiffness = Spring.StiffnessMedium)
+                    ) + fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { -300 },
+                        animationSpec = spring(stiffness = Spring.StiffnessMedium)
+                    ) + fadeIn(animationSpec = spring(stiffness = Spring.StiffnessMedium))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { 300 },
+                        animationSpec = spring(stiffness = Spring.StiffnessMedium)
+                    ) + fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium))
+                }
             ) {
         composable(
             route = Screen.Home.route,
             enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { if (targetState.destination.route in listOf(Screen.Calendar.route, Screen.MedicationList.route, Screen.Alarms.route)) -it else it },
-                    animationSpec = spring(stiffness = Spring.StiffnessMedium)
-                )
+                if (initialState.destination.route in listOf(Screen.Calendar.route, Screen.MedicationList.route, Screen.Alarms.route)) {
+                    slideInHorizontally(initialOffsetX = { -300 }) + fadeIn()
+                } else {
+                    null // Use default
+                }
             },
             exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { if (targetState.destination.route in listOf(Screen.Calendar.route, Screen.MedicationList.route, Screen.Alarms.route)) -it else it },
-                    animationSpec = spring(stiffness = Spring.StiffnessMedium)
-                )
+                if (targetState.destination.route in listOf(Screen.Calendar.route, Screen.MedicationList.route, Screen.Alarms.route)) {
+                    slideOutHorizontally(targetOffsetX = { -300 }) + fadeOut()
+                } else {
+                    null // Use default
+                }
             }
         ) {
             HomeScreen(navController = navController)
@@ -231,16 +259,18 @@ fun AppNavigation() {
         composable(
             route = Screen.Calendar.route,
             enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { if (initialState.destination.route == Screen.Home.route) it else -it },
-                    animationSpec = spring(stiffness = Spring.StiffnessMedium)
-                )
+                if (initialState.destination.route == Screen.Home.route) {
+                    slideInHorizontally(initialOffsetX = { 300 }) + fadeIn()
+                } else {
+                    null
+                }
             },
             exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { if (targetState.destination.route == Screen.Home.route) it else -it },
-                    animationSpec = spring(stiffness = Spring.StiffnessMedium)
-                )
+                if (targetState.destination.route == Screen.Home.route) {
+                    slideOutHorizontally(targetOffsetX = { 300 }) + fadeOut()
+                } else {
+                    null
+                }
             }
         ) {
             CalendarScreen(navController = navController)
@@ -249,16 +279,18 @@ fun AppNavigation() {
         composable(
             route = Screen.Alarms.route,
             enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { if (initialState.destination.route in listOf(Screen.Home.route, Screen.Calendar.route, Screen.MedicationList.route)) it else -it },
-                    animationSpec = spring(stiffness = Spring.StiffnessMedium)
-                )
+                if (initialState.destination.route in listOf(Screen.Home.route, Screen.Calendar.route, Screen.MedicationList.route)) {
+                    slideInHorizontally(initialOffsetX = { 300 }) + fadeIn()
+                } else {
+                    null
+                }
             },
             exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { if (targetState.destination.route in listOf(Screen.Home.route, Screen.Calendar.route, Screen.MedicationList.route)) it else -it },
-                    animationSpec = spring(stiffness = Spring.StiffnessMedium)
-                )
+                if (targetState.destination.route in listOf(Screen.Home.route, Screen.Calendar.route, Screen.MedicationList.route)) {
+                    slideOutHorizontally(targetOffsetX = { 300 }) + fadeOut()
+                } else {
+                    null
+                }
             }
         ) {
             AlarmsScreen(navController = navController)
@@ -320,16 +352,18 @@ fun AppNavigation() {
         composable(
             route = Screen.MedicationList.route,
             enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { if (initialState.destination.route in listOf(Screen.Home.route, Screen.Calendar.route)) it else -it },
-                    animationSpec = spring(stiffness = Spring.StiffnessMedium)
-                )
+                if (initialState.destination.route in listOf(Screen.Home.route, Screen.Calendar.route)) {
+                    slideInHorizontally(initialOffsetX = { 300 }) + fadeIn()
+                } else {
+                    null
+                }
             },
             exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { if (targetState.destination.route in listOf(Screen.Home.route, Screen.Calendar.route)) it else -it },
-                    animationSpec = spring(stiffness = Spring.StiffnessMedium)
-                )
+                if (targetState.destination.route in listOf(Screen.Home.route, Screen.Calendar.route)) {
+                    slideOutHorizontally(targetOffsetX = { 300 }) + fadeOut()
+                } else {
+                    null
+                }
             }
         ) {
             MedicationListScreen(navController = navController)

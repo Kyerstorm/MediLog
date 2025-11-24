@@ -1,0 +1,41 @@
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:kspDebugKotlin
+
+> Task :app:compileDebugKotlin
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:22:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:30:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:38:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:57:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:65:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:73:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:81:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/di/DatabaseModule.kt:90:30 The corresponding parameter in the supertype 'Migration' is named 'db'. This may cause problems when calling this function with named arguments.
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:789:21 Variable 'obj' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/ui/screens/SettingsScreenEnhanced.kt:1313:30 Parameter 'selectedColorHex' is never used
+w: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/app/src/main/java/com/healthcalendar/app/viewmodel/MedicationViewModel.kt:144:29 Variable 'scheduleId' is never used
+
+[Incubating] Problems report is available at: file:///C:/Users/benet/OneDrive/Documents/Coding/Projects/Personal%20Projects/MediLog/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.0-milestone-1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 16s
+15 actionable tasks: 3 executed, 12 up-to-date
