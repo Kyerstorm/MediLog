@@ -84,14 +84,48 @@ class SettingsViewModel @Inject constructor(
         initialValue = SettingsUiState()
     )
 
-    // Legacy individual properties for backward compatibility (can be removed after UI update)
-    @Deprecated("Use settingsState instead", ReplaceWith("settingsState.map { it.themeMode }"))
+    // Individual properties exposed as StateFlows for UI consumption
     val themeMode = preferencesRepository.themeMode.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(), UserPreferencesRepository.ThemeMode.SYSTEM
     )
-    @Deprecated("Use settingsState instead", ReplaceWith("settingsState.map { it.dynamicColor }"))
     val dynamicColor = preferencesRepository.dynamicColor.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(), true
+    )
+    val fontScale = preferencesRepository.fontScale.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), 1.0f
+    )
+    val highContrast = preferencesRepository.highContrast.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), false
+    )
+    val amoledMode = preferencesRepository.amoledMode.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), false
+    )
+    val language = preferencesRepository.language.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), UserPreferencesRepository.Language.ENGLISH
+    )
+    val notificationSound = preferencesRepository.notificationSound.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), UserPreferencesRepository.NotificationSound.DEFAULT
+    )
+    val vibrate = preferencesRepository.vibrate.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), true
+    )
+    val autoBackup = preferencesRepository.autoBackup.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), false
+    )
+    val backupFrequency = preferencesRepository.backupFrequency.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), UserPreferencesRepository.BackupFrequency.WEEKLY
+    )
+    val exportFormat = preferencesRepository.exportFormat.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), UserPreferencesRepository.ExportFormat.CSV
+    )
+    val passcodeEnabled = preferencesRepository.passcodeEnabled.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), false
+    )
+    val passcodeHash = preferencesRepository.passcodeHash.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), null
+    )
+    val biometricEnabled = preferencesRepository.biometricEnabled.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(), false
     )
     
     // Status flows
